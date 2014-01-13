@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 import os
-import re
 import sys
 import codecs
 from fnmatch import fnmatchcase
 from distutils.util import convert_path
 from setuptools import setup, find_packages
+
+from django_dumpdb import __version__
+
 
 def get_long_description():
     return open('README').read()
@@ -14,13 +16,6 @@ def get_long_description():
 def read(*parts):
     return codecs.open(os.path.join(os.path.dirname(__file__), *parts)).read()
 
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
 
 # Provided as an attribute, so you can append to these instead
 # of replicating them:
@@ -110,7 +105,7 @@ def find_package_data(where='.', package='',
 
 setup(
       name='django-dumpdb',
-      version=find_version("django_dumpdb", "__init__.py"),
+      version=__version__,
       description='A better, faster, stronger alternative for manage.py dumpdata',
       long_description=get_long_description(),
       author='Andrey Golovizin',
