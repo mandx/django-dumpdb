@@ -163,26 +163,14 @@ def dump(file=sys.stdout):
         file.write(line.encode('UTF-8') + '\n')
 
 
-# http://code.djangoproject.com/ticket/9964
-#@transaction.commit_on_success
+@transaction.commit_on_success
 def load(file=sys.stdin):
     """ Load data from file into the DB. """
-    try:
-        transaction.enter_transaction_management()
-        transaction.managed(True)
+    disable_foreign_keys()
+    for table, fields, rows in parse_file(file):
+        load_table(table, fields, rows)
 
-        disable_foreign_keys()
-        for table, fields, rows in parse_file(file):
-            load_table(table, fields, rows)
-
-        reset_sequences()
-    except:
-        transaction.rollback()
-        raise
-    else:
-        transaction.commit()
-    finally:
-        transaction.leave_transaction_management()
+    reset_sequences()
 
 
 def parse_file(lines):
@@ -251,7 +239,7 @@ def disable_foreign_keys():
         sql = DISABLE_FOREIGN_KEYS_SQL[connection.settings_dict['ENGINE']]
     else:
         sql = DISABLE_FOREIGN_KEYS_SQL['django.db.backends.%s' % settings.DATABASE_ENGINE]
-    
+
     if sql:
         cursor = connection.cursor()
         cursor.execute(sql)
