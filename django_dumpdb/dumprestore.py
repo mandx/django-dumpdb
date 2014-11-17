@@ -163,7 +163,7 @@ def dump(file=sys.stdout):
         file.write(line.encode('UTF-8') + '\n')
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def load(file=sys.stdin):
     """ Load data from file into the DB. """
     disable_foreign_keys()
