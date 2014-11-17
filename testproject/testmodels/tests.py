@@ -4,19 +4,20 @@ unittest). These will both pass when you run "manage.py test".
 
 Replace these with more appropriate tests for your application.
 """
-
+import sys
 from os import path
 from io import BytesIO
 from difflib import unified_diff
+import json
 
 from django.test import TestCase
 from django.core import serializers
-from django.core.management.commands import dumpdata
+from django.core.management import call_command
 
 from django_dumpdb import dumprestore
 
+
 DATA_PATH = path.join(path.dirname(__file__), 'testdata')
-print DATA_PATH
 
 
 class TestDumpRestoreBase(object):
@@ -45,9 +46,22 @@ class TestDumpRestoreBase(object):
         with self.open_dump() as dump:
             dumprestore.load(dump)
 
-        result = dumpdata.Command().handle(format='json', indent=4) + '\n'
+        backup_stdout = sys.stdout
+        try:
+            sys.stdout = BytesIO()
+
+            call_command('dumpdata', format='json', indent=4, traceback=True)
+
+            result = sys.stdout.getvalue()
+        finally:
+            sys.stdout.close()
+            sys.stdout = backup_stdout
+
         with self.open_fixture() as reference_fixture:
-            self.assertTextEqual(reference_fixture.read(), result)
+            self.assertEqual(
+                json.loads(reference_fixture.read()),
+                json.loads(result)
+            )
 
     def assertTextEqual(self, expected, got):
         self.assertEqual(

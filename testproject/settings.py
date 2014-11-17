@@ -65,7 +65,6 @@ SECRET_KEY = 'p75476t*e+!9!sawwh!w=g#pj-xk$j9vtv!8#__(445&-7vmr%'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -90,3 +89,5 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 )
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
