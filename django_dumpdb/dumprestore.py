@@ -1,5 +1,5 @@
 # Copyright (c) 2010  <copyright holders>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -7,10 +7,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -138,10 +138,10 @@ def get_db_prep_value_compatibility_closure(field):
     """ Version of field.get_db_prep_value compatible with < Django 1.2 """
     def get_db_prep_value(value):
         if VERSION < (1, 2):
-            return field.get_db_prep_value(value)
+            return field.get_db_prep_value(value, prepared=True)
         else:
-            return field.get_db_prep_value(value, connection=connection)
-    
+            return field.get_db_prep_value(value, prepared=True, connection=connection)
+
     return get_db_prep_value
 
 
